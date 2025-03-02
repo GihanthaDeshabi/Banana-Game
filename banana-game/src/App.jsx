@@ -1,26 +1,50 @@
-// src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Pages
-import Game from './pages/Game';
-import BananaGame from './pages/BananaGame';
-
-// Context
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
-// CSS
+
+import LandingPage from './components/landing/LandingPage';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import BananaGame from './components/games/BananaGame';
+import MathGame from './components/games/MathGame';
+import Navbar from './components/common/Navbar';
+import Footer from './components/common/Footer';
+import ProtectedRoute from './components/common/ProtectedRoute';
+
 import './App.css';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gradient-to-b from-banana-yellow to-banana-dark">
-          <Routes>
-            <Route path="/" element={<Game />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/banana-game" element={<BananaGame />} />
-          </Routes>
+        <div className="app-container">
+          <Navbar />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route 
+                path="/game" 
+                element={
+                  <ProtectedRoute>
+                    <BananaGame />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/math-game" 
+                element={
+                  <ProtectedRoute>
+                    <MathGame />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </main>
+          <Footer />
         </div>
       </Router>
     </AuthProvider>

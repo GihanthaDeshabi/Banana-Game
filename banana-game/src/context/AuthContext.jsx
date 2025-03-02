@@ -1,113 +1,125 @@
-// src/context/AuthContext.jsx
-import { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+// Create context
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  
-  // Check if user is logged in on first load
+
   useEffect(() => {
-    const loadUser = async () => {
-      const token = localStorage.getItem('token');
-      
-      if (token) {
-        axios.defaults.headers.common['x-auth-token'] = token;
-        
-        try {
-          const res = await axios.get('http://localhost:5000/api/auth/me');
-          setUser(res.data);
-        } catch (error) {
-          console.error('Error loading user:', error);
-          localStorage.removeItem('token');
-          delete axios.defaults.headers.common['x-auth-token'];
+    // Check if user is already logged in
+    const checkLoggedIn = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+
+        if (storedUser && token) {
+          // Validate token with backend
+          const response = await fetch('http://localhost:5000/api/users/verify', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            setUser(JSON.parse(storedUser));
+            setIsAuthenticated(true);
+          } else {
+            // Token invalid, clear localStorage
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+          }
         }
+      } catch (error) {
+        console.error('Auth verification error:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
-    
-    loadUser();
+
+    checkLoggedIn();
   }, []);
-  
-  // Register user
-  const register = async (formData) => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
-      
-      // Set token and user
-      localStorage.setItem('token', res.data.token);
-      axios.defaults.headers.common['x-auth-token'] = res.data.token;
-      setUser(res.data.user);
-      
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Registration failed' 
-      };
-    }
-  };
-  
+
   // Login user
-  const login = async (formData) => {
+  const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      
-      // Set token and user
-      localStorage.setItem('token', res.data.token);
-      axios.defaults.headers.common['x-auth-token'] = res.data.token;
-      setUser(res.data.user);
-      
+      const response = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Store user and token in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Update state
+      setUser(data.user);
+      setIsAuthenticated(true);
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Login failed' 
-      };
+      return { success: false, message: error.message };
     }
   };
-  
+
+  // Register user
+  const register = async (username, email, password) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
   // Logout user
   const logout = () => {
+    // Clear localStorage
+    localStorage.removeItem('user');
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['x-auth-token'];
+
+    // Update state
     setUser(null);
+    setIsAuthenticated(false);
   };
-  
-  // Update high score
-  const updateHighScore = async (score) => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/scores/update', { score });
-      
-      // Update user with new high score
-      setUser({ ...user, highScore: res.data.highScore });
-      
-      return { success: true, highScore: res.data.highScore };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Failed to update score' 
-      };
-    }
-  };
-  
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        isAuthenticated,
         loading,
-        register,
         login,
-        logout,
-        updateHighScore
+        register,
+        logout
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;

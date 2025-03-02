@@ -1,33 +1,40 @@
-// server/index.js
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
+const mongoose = require('mongoose');
+const config = require('./config/default.json');
+const userRoutes = require('./routes/users');
 const scoreRoutes = require('./routes/scores');
 
-dotenv.config();
-
+// Initialize express app
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/banana-game', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log('MongoDB connection error:', err));
+// Connect to MongoDB
+mongoose.connect(config.mongoURI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => {
+    console.error('MongoDB Connection Error:', err);
+    process.exit(1);
+  });
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/scores', scoreRoutes);
 
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('../build'));
+  
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
+  });
+}
+
+// Define PORT
+const PORT = process.env.PORT || 5000;
+
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
