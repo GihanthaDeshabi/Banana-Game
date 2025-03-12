@@ -233,10 +233,10 @@ const Register = () => {
           <span>OR</span>
         </div>
         
-        <button className="google-register">
+        {/* <button className="google-register">
           <div className="google-icon"></div>
           <span>Continue with Google</span>
-        </button>
+        </button> */}
         
         <div className="register-footer">
           <p>Already have an account? <Link to="/login" className="login-link">Login here</Link></p>
