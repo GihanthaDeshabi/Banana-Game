@@ -1,4 +1,4 @@
-/* App.css */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -20,7 +20,7 @@ body {
   flex: 1;
 }
 
-/* Common Loading Spinner */
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -51,7 +51,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Common Button Styles */
+
 .btn {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
@@ -87,7 +87,7 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Styles */
+
 .form-container {
   background-color: white;
   border-radius: 15px;
@@ -130,7 +130,7 @@ body {
   margin-top: 5px;
 }
 
-/* Media Queries */
+
 @media screen and (max-width: 768px) {
   .form-container {
     padding: 20px;

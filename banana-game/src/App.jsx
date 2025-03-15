@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 
 
-import LandingPage from './components/landing/LandingPage';
+import LandingPage from './components/Landing/LandingPage';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import BananaGame from './components/games/BananaGame';

@@ -1,4 +1,4 @@
-/* Navbar.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap');
 
 :root {
@@ -142,7 +142,7 @@
   transition: all 0.3s ease;
 }
 
-/* Mobile responsiveness */
+
 @media screen and (max-width: 768px) {
   .menu-icon {
     display: flex;

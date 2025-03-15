@@ -4,28 +4,26 @@ import './BananaGame.css';
 
 const BananaGame = () => {
   const [score, setScore] = useState(0);
-  const [level, setLevel] = useState(1);
+  const [level, setLevel] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
   const [targetScore, setTargetScore] = useState(5);
   const [gameState, setGameState] = useState('idle'); 
   const [bananas, setBananas] = useState([]);
   const [splats, setSplats] = useState([]);
   const [user, setUser] = useState(null);
+  const [showGameOverOptions, setShowGameOverOptions] = useState(false);
   const gameAreaRef = useRef(null);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     const userFromStorage = localStorage.getItem('user');
     if (userFromStorage) {
       setUser(JSON.parse(userFromStorage));
     } else {
-      
       navigate('/login');
     }
   }, [navigate]);
 
- 
   useEffect(() => {
     if (timeLeft > 0 && gameState === 'playing') {
       const timerId = setTimeout(() => {
@@ -37,34 +35,27 @@ const BananaGame = () => {
     }
   }, [timeLeft, gameState]);
 
-  
   const checkLevelCompletion = () => {
     if (score >= targetScore) {
-      
       setGameState('levelUp');
       
-     
       setTimeout(() => {
-       
         setLevel(prev => prev + 1);
-        setTargetScore(prev => prev + 5);
+        setTargetScore(prev => prev + 3); 
         setTimeLeft(20);
         setScore(0);
         setBananas([]);
         setGameState('playing');
       }, 3000);
     } else {
-      
       endGame();
     }
   };
 
- 
   useEffect(() => {
     if (gameState !== 'playing') return;
 
     const spawnBanana = () => {
-     
       const gameArea = gameAreaRef.current;
       if (!gameArea) return;
       
@@ -88,12 +79,10 @@ const BananaGame = () => {
       }
     };
 
-    
     const spawnInterval = setInterval(spawnBanana, Math.max(800 - (level * 50), 300));
     return () => clearInterval(spawnInterval);
   }, [bananas.length, gameState, level]);
 
- 
   useEffect(() => {
     if (gameState !== 'playing') return;
     
@@ -105,7 +94,6 @@ const BananaGame = () => {
     const moveInterval = setInterval(() => {
       setBananas(prevBananas => 
         prevBananas.map(banana => {
-          
           let xOffset = 0;
           if (banana.wiggle) {
             xOffset = Math.sin(Date.now() / 300) * banana.wiggleAmount;
@@ -124,7 +112,6 @@ const BananaGame = () => {
     return () => clearInterval(moveInterval);
   }, [gameState]);
 
-  
   useEffect(() => {
     if (splats.length > 0) {
       const cleanupTimeout = setTimeout(() => {
@@ -136,12 +123,9 @@ const BananaGame = () => {
   }, [splats]);
 
   const handleBananaTap = (id, x, y) => {
-    
     setSplats(prev => [...prev, { id: Date.now(), x, y }]);
     
-    
     setBananas(prevBananas => prevBananas.filter(banana => banana.id !== id));
-    
     
     const gameArea = gameAreaRef.current;
     if (gameArea) {
@@ -159,18 +143,15 @@ const BananaGame = () => {
       }, 1000);
     }
     
-    
     setScore(prevScore => {
       const newScore = prevScore + 1;
       
       if (newScore >= targetScore && timeLeft > 0) {
         setGameState('levelUp');
         
-        
         setTimeout(() => {
-          
           setLevel(prev => prev + 1);
-          setTargetScore(prev => prev + 5);
+          setTargetScore(prev => prev + 3); 
           setTimeLeft(20);
           setScore(0);
           setBananas([]);
@@ -184,24 +165,26 @@ const BananaGame = () => {
   const startGame = () => {
     setScore(0);
     setLevel(1);
-    setTargetScore(5);
+    setTargetScore(5); 
     setTimeLeft(20);
     setBananas([]);
     setGameState('playing');
+    setShowGameOverOptions(false);
   };
 
   const endGame = async () => {
     setGameState('ended');
     
-    
     try {
       await saveScore(score, level - 1);
-      setTimeout(() => {
-        navigate('/math-game');
-      }, 3000);
+      setShowGameOverOptions(true);
     } catch (error) {
       console.error('Error saving score', error);
     }
+  };
+
+  const continueTtoMathGame = () => {
+    navigate('/math-game');
   };
 
   const saveScore = async (finalScore, finalLevel) => {
@@ -212,7 +195,6 @@ const BananaGame = () => {
         throw new Error('Authentication required');
       }
       
-     
       const response = await fetch('http://localhost:5000/api/scores', {
         method: 'POST',
         headers: {
@@ -239,12 +221,10 @@ const BananaGame = () => {
     }
   };
 
-  
   const progressPercentage = Math.min((score / targetScore) * 100, 100);
 
   return (
     <div className="game-container">
-      
       <header className="game-header-bar">
         <h1 className="game-title">🍌 Banana Tapper 🍌</h1>
         
@@ -261,7 +241,6 @@ const BananaGame = () => {
         </div>
       </header>
       
-     
       <div className="game-stats">
         <div className="level-display">
           Level {level}
@@ -278,13 +257,12 @@ const BananaGame = () => {
         </div>
       </div>
       
-     
       <div className="game-area" ref={gameAreaRef}>
         {gameState === 'idle' && (
           <div className="start-screen">
             <h2>Tap as many bananas as you can!</h2>
             <p>Level {level}: Get {targetScore} taps in {timeLeft} seconds</p>
-            <p>Each level adds 5 more taps to the target</p>
+            <p>Each level adds 3 more taps to the target</p>
             <button className="start-btn" onClick={startGame}>
               Start Game
             </button>
@@ -325,14 +303,33 @@ const BananaGame = () => {
         {gameState === 'levelUp' && (
           <div className="level-up-overlay">
             <div className="level-up-card">
-              <h2>Level {level} Complete!</h2>
+              <h2>Level {level+1} Complete!</h2>
               <p>Great job! Get ready for level {level + 1}</p>
-              <div className="next-target">Next target: {targetScore + 5} bananas</div>
+              <div className="next-target">Next target: {targetScore + 3} bananas</div>
             </div>
           </div>
         )}
         
-        {gameState === 'ended' && (
+        {gameState === 'ended' && showGameOverOptions && (
+          <div className="game-over-overlay">
+            <div className="game-over-card">
+              <h2>Game Over!</h2>
+              <p>Your score: {score}/{targetScore}</p>
+              <p>Level reached: {level}</p>
+              <p>What would you like to do next?</p>
+              <div className="game-over-options">
+                <button className="option-btn restart-btn" onClick={startGame}>
+                  Start Again
+                </button>
+                <button className="option-btn continue-btn" onClick={continueTtoMathGame}>
+                  Continue to Math Game
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {gameState === 'ended' && !showGameOverOptions && (
           <div className="game-over-overlay">
             <div className="game-over-card">
               <h2>Game Over!</h2>
@@ -347,14 +344,13 @@ const BananaGame = () => {
         )}
       </div>
       
-     
       <div className="game-instructions">
         <h3>How to Play:</h3>
         <ul>
           <li>Tap the falling bananas to earn points</li>
           <li>Complete each level within the time limit</li>
-          <li>Level 1: 15 bananas in 20 seconds</li>
-          <li>Each level adds 5 more banana taps</li>
+          <li>Level 1: 5 bananas in 20 seconds</li>
+          <li>Each level adds 3 more banana taps</li>
           <li>Missing your target means MATH time!</li>
         </ul>
       </div>

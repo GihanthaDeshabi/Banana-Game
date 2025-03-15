@@ -14,13 +14,7 @@ Banana Tapper is a simple yet addictive game that challenges players to tap at l
 - **Responsive Design**: Works on both desktop and mobile devices
 - **High Score Tracking**: Records your best performances
 
-## How to Play
 
-1. Click the 'Start Challenge' button to begin
-2. Tap/Click on the bananas as quickly as possible
-3. Goal: Tap at least 25 bananas in 20 seconds
-4. Each tap earns you 1 point
-5. Success unlocks the Banana Math Challenge!
 
 ## Technologies Used
 

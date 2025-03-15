@@ -4,12 +4,11 @@ import './LandingPage.css';
 
 const LandingPage = () => {
   const [loaded, setLoaded] = useState(false);
-  
+
   useEffect(() => {
-    
+
     setLoaded(true);
-    
-   
+
     const bananas = document.querySelectorAll('.banana-decoration');
     bananas.forEach((banana) => {
       banana.style.animationDelay = `${Math.random() * 2}s`;
@@ -19,7 +18,7 @@ const LandingPage = () => {
   return (
     <div className={`landing-container ${loaded ? 'loaded' : ''}`}>
       <div className="banana-bg"></div>
-      
+
       <div className="content">
         <h1 className="title">
           {['B', 'A', 'N', 'A', 'N', 'A'].map((letter, index) => (
@@ -33,9 +32,9 @@ const LandingPage = () => {
           ))}
           <span className="game-text">GAME</span>
         </h1>
-        
+
         <p className="subtitle">Are you ready for a-peeling fun?</p>
-        
+
         <div className="game-features">
           <div className="feature">
             <div className="feature-icon tap-icon"></div>
@@ -50,7 +49,7 @@ const LandingPage = () => {
             <span>Progressive Levels</span>
           </div>
         </div>
-        
+
         <div className="buttons">
           <Link to="/login" className="btn login-btn">
             <span>Login</span>
@@ -62,7 +61,7 @@ const LandingPage = () => {
           </Link>
         </div>
       </div>
-      
+
       <div className="banana-decorations">
         <div className="banana-decoration banana-1"></div>
         <div className="banana-decoration banana-2"></div>
@@ -70,9 +69,9 @@ const LandingPage = () => {
         <div className="banana-decoration banana-4"></div>
         <div className="banana-decoration banana-5"></div>
       </div>
-      
+
       <div className="bottom-curve"></div>
-      
+
       <footer className="landing-footer">
         <p>© 2025 Banana Game - All rights reserved</p>
         <div className="footer-links">

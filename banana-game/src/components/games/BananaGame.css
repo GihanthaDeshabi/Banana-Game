@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fredoka:wght@400;500;600&display=swap');
 
 :root {
@@ -269,7 +268,7 @@ body {
   position: absolute;
   width: 80px;
   height: 80px;
-  background-image: url('/assets/images/banana.png');
+  
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -304,7 +303,7 @@ body {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-image: url('/assets/images/banana_splat.png');
+  
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -416,6 +415,74 @@ body {
   margin-bottom: 10px;
 }
 
+.game-over-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.option-btn {
+  position: relative;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.restart-btn {
+  background: linear-gradient(to bottom, var(--secondary), var(--secondary-dark));
+  color: var(--text-dark);
+  border: 3px solid var(--accent);
+}
+
+.restart-btn::before {
+  
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.restart-btn .btn-text {
+  padding-left: 15px;
+}
+
+.continue-btn {
+  background: linear-gradient(to bottom, var(--accent), var(--accent-light));
+  color: var(--text-dark);
+  border: 3px solid var(--secondary);
+}
+
+.continue-btn::before {
+  
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.continue-btn .btn-text {
+  padding-left: 15px;
+}
+
+.option-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.option-btn:active {
+  transform: translateY(2px);
+}
+
 .loading-spinner {
   margin-top: 20px;
   display: flex;
@@ -477,7 +544,6 @@ body {
   z-index: 10;
 }
 
-/* Animations */
 @keyframes bounceIn {
   0% {
     transform: scale(0.3);
@@ -590,6 +656,11 @@ body {
   .game-over-card h2 {
     font-size: 2rem;
   }
+  
+  .game-over-options {
+    flex-direction: column;
+    gap: 15px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -664,5 +735,15 @@ body {
   
   .game-instructions li {
     font-size: 0.9rem;
+  }
+  
+  .option-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px 8px 30px;
+  }
+  
+  .option-btn::before {
+    font-size: 1rem;
+    left: 8px;
   }
 }

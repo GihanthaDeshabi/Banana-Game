@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-// Create context
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,14 +9,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
+   
     const checkLoggedIn = async () => {
       try {
         const storedUser = localStorage.getItem('user');
         const token = localStorage.getItem('token');
 
         if (storedUser && token) {
-          // Validate token with backend
+          
           const response = await fetch('http://localhost:5000/api/users/verify', {
             method: 'GET',
             headers: {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
           } else {
-            // Token invalid, clear localStorage
+           
             localStorage.removeItem('user');
             localStorage.removeItem('token');
           }
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     checkLoggedIn();
   }, []);
 
-  // Login user
+
   const login = async (email, password) => {
     try {
       const response = await fetch('http://localhost:5000/api/users/login', {
@@ -60,11 +60,11 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store user and token in localStorage
+    
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Update state
+     
       setUser(data.user);
       setIsAuthenticated(true);
 
@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register user
   const register = async (username, email, password) => {
     try {
       const response = await fetch('http://localhost:5000/api/users/register', {
@@ -97,13 +96,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout user
+  
   const logout = () => {
-    // Clear localStorage
+    
     localStorage.removeItem('user');
     localStorage.removeItem('token');
 
-    // Update state
+  
     setUser(null);
     setIsAuthenticated(false);
   };

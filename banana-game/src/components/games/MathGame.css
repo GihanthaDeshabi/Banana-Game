@@ -1,141 +1,502 @@
-/* MathGame.css */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  --banana-yellow: #FFE135;
-  --banana-dark: #FFCC00;
-  --banana-brown: #8B4513;
-  --dark-green: #006400;
-  --light-green: #90EE90;
+  --primary: #5C33F6;
+  --primary-dark: #4A29C4;
+  --primary-light: #7B5FFF;
+  --secondary: #FFCD38;
+  --secondary-dark: #F7B801;
+  --secondary-light: #FFE382;
+  --accent: #FF8427;
+  --accent-light: #FFA45C;
+  --bg-gradient-1: #2C0E87;
+  --bg-gradient-2: #5433FF;
+  --text-light: #FFFFFF;
+  --text-dark: #333333;
+  --success: #00C896;
+  --danger: #FF3860;
+  --gray-light: #F5F5F5;
+  --gray-medium: #E0E0E0;
+  --gray-dark: #9E9E9E;
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --border-radius-xl: 30px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-gradient-1);
+  color: var(--text-dark);
+  overflow-x: hidden;
 }
 
 .math-game-container {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #e0f7fa 0%, #fff9c4 100%);
-  font-family: 'Poppins', sans-serif;
-  padding: 20px;
+  padding: 40px 20px;
+  position: relative;
+  background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+  overflow: hidden;
 }
 
-.game-header {
+.banana-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  background-size: 300px;
+  background-repeat: repeat;
+  opacity: 0.05;
+  z-index: 0;
+  animation: rotateBg 120s linear infinite;
+}
+
+@keyframes rotateBg {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.math-header {
   text-align: center;
   margin-bottom: 30px;
-  background-color: white;
-  padding: 20px 40px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 25px 40px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
   max-width: 800px;
   width: 90%;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: slideDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.game-header h1 {
-  font-family: 'Fredoka One', cursive;
-  color: var(--banana-brown);
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.math-header h1 {
+  font-family: 'Fredoka', cursive;
+  font-weight: 600;
+  color: var(--accent);
   font-size: 2.5rem;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
-.game-header p {
-  color: #555;
+.math-header p {
+  color: var(--text-dark);
   font-size: 1.1rem;
 }
 
-.iframe-container {
+.math-iframe-container {
   width: 90%;
   max-width: 900px;
   height: 600px;
-  border-radius: 15px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  background-color: white;
+  box-shadow: var(--shadow-xl);
+  background-color: rgba(255, 255, 255, 0.1);
   position: relative;
+  z-index: 1;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .math-game-iframe {
   width: 100%;
   height: 100%;
   border: none;
+  background-color: white;
 }
 
-.game-footer {
+.math-footer {
   margin-top: 30px;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .back-button {
-  background-color: var(--banana-yellow);
-  color: var(--banana-brown);
-  border: 2px solid var(--banana-brown);
+  background: linear-gradient(to right, var(--secondary), var(--accent));
+  color: var(--text-dark);
+  border: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 1.1rem;
   padding: 12px 30px;
-  border-radius: 30px;
+  border-radius: var(--border-radius-xl);
   cursor: pointer;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.back-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+  transform: translateX(-100%);
+  transition: transform 0.5s;
 }
 
 .back-button:hover {
-  background-color: var(--banana-dark);
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg), 0 10px 20px rgba(247, 184, 1, 0.2);
 }
 
-.loading-container {
+.back-button:hover::before {
+  transform: translateX(100%);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.btn-banana-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.btn-banana-icon::before {
+  content: '🍌';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+}
+.math-loading-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+  position: relative;
+  overflow: hidden;
 }
 
-.loading-spinner {
+.math-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+}
+
+.math-loading-banana {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  margin-bottom: 20px;
+  animation: bounce 1.5s infinite;
+}
+
+.math-loading-banana::before {
+  content: '🍌';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
+
+.math-loading-spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid var(--banana-yellow);
-  border-top: 5px solid var(--banana-brown);
+  border: 4px solid rgba(255, 205, 56, 0.3);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  border-top-color: var(--secondary);
   margin-bottom: 20px;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.loading-container p {
+.math-loading-container p {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.3rem;
+  color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.game-result-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.game-result-card {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  padding: 40px 60px;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 4px solid var(--text-light);
+  color: var(--text-light);
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.game-result-card h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.game-result-card p {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  color: var(--secondary);
+  font-weight: 600;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.retry-button {
+  background: linear-gradient(to right, var(--secondary), var(--accent));
+  color: var(--text-dark);
+  border: none;
   font-family: 'Poppins', sans-serif;
-  font-size: 1.2rem;
-  color: var(--banana-brown);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 12px 30px;
+  border-radius: var(--border-radius-xl);
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: var(--shadow-md);
+}
+
+.retry-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.retry-button:active {
+  transform: translateY(0);
+}
+
+.banana-decoration {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+  z-index: 0;
+  animation: float 6s ease-in-out infinite;
+}
+
+.banana-decoration::before {
+  content: '🍌';
+  font-size: 2.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
+
+.math-banana-1 {
+  top: 10%;
+  left: 5%;
+  animation-delay: 0.5s;
+}
+
+.math-banana-2 {
+  bottom: 15%;
+  right: 8%;
+  animation-delay: 1.2s;
+}
+
+.math-banana-3 {
+  top: 60%;
+  left: 8%;
+  animation-delay: 0.8s;
 }
 
 @media (max-width: 768px) {
-  .iframe-container {
+  .math-iframe-container {
     height: 500px;
   }
   
-  .game-header h1 {
+  .math-header h1 {
+    font-size: 2rem;
+  }
+  
+  .game-result-card {
+    padding: 30px 40px;
+  }
+  
+  .game-result-card h2 {
+    font-size: 2rem;
+  }
+  
+  .banana-decoration {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .banana-decoration::before {
     font-size: 2rem;
   }
 }
 
 @media (max-width: 576px) {
-  .iframe-container {
+  .math-iframe-container {
     height: 400px;
   }
   
-  .game-header {
-    padding: 15px 20px;
+  .math-header {
+    padding: 20px;
   }
   
-  .game-header h1 {
+  .math-header h1 {
     font-size: 1.8rem;
   }
   
-  .game-header p {
+  .math-header p {
     font-size: 1rem;
+  }
+  
+  .game-result-card {
+    padding: 25px;
+  }
+  
+  .game-result-card h2 {
+    font-size: 1.8rem;
+  }
+  
+  .game-result-card p {
+    font-size: 1.2rem;
   }
 }
