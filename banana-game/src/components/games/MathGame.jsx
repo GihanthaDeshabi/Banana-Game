@@ -7,49 +7,78 @@ const MathGame = () => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [gameComplete, setGameComplete] = useState(false);
-  const [gameResult, setGameResult] = useState({ score: 0, passed: false });
+  const [gameResult, setGameResult] = useState({ passed: false });
+  const [mathProblem, setMathProblem] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [failedLevel, setFailedLevel] = useState(1);
   const navigate = useNavigate();
   
-  const mathGameApiUrl = "https://marcconrad.com/uob/banana/";
+  const mathGameApiUrl = "https://marcconrad.com/uob/banana/api.php";
 
   useEffect(() => {
     const userFromStorage = localStorage.getItem('user');
     const tokenFromStorage = localStorage.getItem('token');
+    const savedFailedLevel = localStorage.getItem('failedLevel');
     
     if (userFromStorage && tokenFromStorage) {
       setUser(JSON.parse(userFromStorage));
       setToken(tokenFromStorage);
-      setIsLoading(false);
+      
+      if (savedFailedLevel) {
+        setFailedLevel(parseInt(savedFailedLevel, 10));
+      }
+      
+      fetchMathProblem();
     } else {
       navigate('/login');
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.origin !== new URL(mathGameApiUrl).origin) return;
+  const fetchMathProblem = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(mathGameApiUrl);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch math problem');
+      }
+      
+      const data = await response.json();
+      setMathProblem(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching math problem:', error);
+      setIsLoading(false);
+    }
+  };
 
-      if (event.data.type === 'GAME_COMPLETE') {
-        const { score, passed } = event.data;
-        
-        setGameComplete(true);
-        setGameResult({ score, passed });
-        
-        saveScore(score, passed);
-        
-        if (passed) {
-          setTimeout(() => {
-            navigate('/game');
-          }, 3000);
-        } else { /*  */ }
-      };
-    };
+  const handleAnswerSelection = (answerIndex) => {
+    setSelectedAnswer(answerIndex);
+  };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [navigate, token, user]);
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) return;
+    
+    const isCorrect = selectedAnswer === mathProblem.solution;
+    
+    setGameComplete(true);
+    setGameResult({ passed: isCorrect });
+    
+    saveScore(isCorrect);
+    
+    setTimeout(() => {
+      if (isCorrect) {
+        localStorage.setItem('continueFromLevel', failedLevel.toString());
+        
+        navigate('/game');
+      } else {
+        localStorage.removeItem('continueFromLevel');
+        navigate('/game');
+      }
+    }, 3000);
+  };
 
-  const saveScore = async (score, passed) => {
+  const saveScore = async (passed) => {
     try {
       if (!token || !user) {
         throw new Error('Authentication required');
@@ -64,7 +93,7 @@ const MathGame = () => {
         body: JSON.stringify({
           userId: user.id,
           game: 'math-game',
-          score: score,
+          score: passed ? 1 : 0,
           won: passed
         })
       });
@@ -76,17 +105,6 @@ const MathGame = () => {
       return await response.json();
     } catch (error) {
       console.error('Error saving score:', error);
-    }
-  };
-
-  const handleRetry = () => {
-    setGameComplete(false);
-    
-    const iframe = document.querySelector('.math-game-iframe');
-    if (iframe) {
-      const originalSrc = iframe.src;
-      iframe.src = '';
-      iframe.src = originalSrc;
     }
   };
 
@@ -109,7 +127,7 @@ const MathGame = () => {
       
       <div className="math-header">
         <h1>Banana Math Challenge</h1>
-        <p>Complete the math challenges to return to the banana game!</p>
+        <p>Complete the math challenge to continue your game!</p>
       </div>
       
       <div className="math-iframe-container">
@@ -117,38 +135,52 @@ const MathGame = () => {
           <div className="game-result-overlay">
             <div className="game-result-card">
               <h2>{gameResult.passed ? "Great Job!" : "Try Again!"}</h2>
-              <p>Your score: {gameResult.score}</p>
               {gameResult.passed ? (
-                <p className="success-message">Redirecting to Banana Game...</p>
+                <p className="success-message">Returning to Level {failedLevel}...</p>
               ) : (
-                <button 
-                  className="retry-button"
-                  onClick={handleRetry}
-                >
-                  Retry Challenge
-                </button>
+                <>
+                  <p>The answer was incorrect.</p>
+                  <p className="success-message">Returning to Level 1...</p>
+                </>
               )}
             </div>
           </div>
         )}
         
-        <iframe
-          src={`${mathGameApiUrl}?userId=${user.id}&token=${token}`}
-          title="Math Game"
-          className="math-game-iframe"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
-      
-      <div className="math-footer">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/game')}
-        >
-          <span>Back to Banana Game</span>
-          <div className="btn-banana-icon"></div>
-        </button>
+        {mathProblem && !gameComplete && (
+          <div className="math-problem-container">
+            <div className="math-problem-image">
+              <img 
+                src={mathProblem.question} 
+                alt="Math Problem" 
+                className="problem-image"
+              />
+            </div>
+            
+            <div className="math-problem-options">
+              <p>Select the correct answer:</p>
+              <div className="answer-options">
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
+                  <button
+                    key={index}
+                    className={`answer-button ${selectedAnswer === index ? 'selected' : ''}`}
+                    onClick={() => handleAnswerSelection(index)}
+                  >
+                    {index}
+                  </button>
+                ))}
+              </div>
+              
+              <button 
+                className="submit-answer-button"
+                onClick={handleSubmitAnswer}
+                disabled={selectedAnswer === null}
+              >
+                Submit Answer
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       
       <div className="banana-decoration math-banana-1"></div>
