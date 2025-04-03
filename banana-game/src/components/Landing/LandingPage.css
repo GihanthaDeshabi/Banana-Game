@@ -59,7 +59,6 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  
   background-size: 300px;
   background-repeat: repeat;
   opacity: 0.05;
@@ -76,6 +75,57 @@ body {
   }
 }
 
+/* New floating particles animation */
+.particles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--secondary);
+  border-radius: 50%;
+  opacity: 0.3;
+  pointer-events: none;
+  animation: floatParticle 15s linear infinite;
+}
+
+.particle:nth-child(odd) {
+  background: var(--primary-light);
+  width: 6px;
+  height: 6px;
+}
+
+.particle:nth-child(3n) {
+  background: var(--accent-light);
+  width: 10px;
+  height: 10px;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px) scale(0);
+    opacity: 0;
+  }
+}
+
 .content {
   max-width: 800px;
   width: 100%;
@@ -89,12 +139,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: var(--shadow-xl);
   transform: perspective(1000px) rotateX(0deg);
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, box-shadow 0.3s ease;
   margin-top: 45px;
+  will-change: transform;
 }
 
 .content:hover {
-  transform: perspective(1000px) rotateX(2deg);
+  box-shadow: var(--shadow-xl), 0 20px 60px rgba(92, 51, 246, 0.3);
 }
 
 .title {
@@ -119,6 +170,11 @@ body {
   animation: dropIn 0.6s forwards ease-out;
   margin: 0 -5px;
   position: relative;
+  transition: transform 0.2s ease-out;
+}
+
+.banana-letter:hover {
+  transform: translateY(-10px) scale(1.1);
 }
 
 .banana-letter::after {
@@ -126,7 +182,6 @@ body {
   position: absolute;
   width: 20px;
   height: 20px;
-  
   background-size: contain;
   background-repeat: no-repeat;
   top: -15px;
@@ -177,6 +232,32 @@ body {
   opacity: 0;
   animation: fadeUp 0.8s forwards;
   animation-delay: 0.7s;
+  position: relative;
+}
+
+.game-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, var(--primary-light), var(--primary));
+  opacity: 0.3;
+  filter: blur(15px);
+  z-index: -1;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    filter: blur(15px);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(20px);
+  }
 }
 
 @keyframes fadeUp {
@@ -198,6 +279,29 @@ body {
   animation: fadeUp 0.8s forwards;
   animation-delay: 0.9s;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.subtitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--secondary);
+  animation: lineGrow 1.2s forwards ease-out;
+  animation-delay: 1.2s;
+}
+
+@keyframes lineGrow {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100px;
+  }
 }
 
 .game-features {
@@ -218,6 +322,20 @@ body {
   gap: 10px;
   color: var(--text-light);
   font-weight: 500;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: staggerFadeIn 0.5s forwards ease-out;
+}
+
+@keyframes staggerFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .feature-icon {
@@ -232,6 +350,25 @@ body {
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.feature-icon::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.feature:hover .feature-icon::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .feature:hover .feature-icon {
@@ -239,19 +376,58 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.feature-text {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.feature:hover .feature-text {
+  transform: translateY(5px);
+}
+
+.feature-text::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--secondary);
+  transition: width 0.3s ease;
+}
+
+.feature:hover .feature-text::after {
+  width: 100%;
+}
+
 .tap-icon::before {
   content: '👆';
   font-size: 1.8rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feature:hover .tap-icon::before {
+  transform: translateY(-5px);
 }
 
 .math-icon::before {
   content: '🧮';
   font-size: 1.8rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feature:hover .math-icon::before {
+  transform: rotate(15deg);
 }
 
 .level-icon::before {
   content: '🏆';
   font-size: 1.8rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feature:hover .level-icon::before {
+  transform: scale(1.2);
 }
 
 .buttons {
@@ -326,6 +502,18 @@ body {
   width: 20px;
   height: 20px;
   position: relative;
+  transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-banana-icon {
+  animation: wiggle 0.5s ease;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(15deg); }
+  50% { transform: rotate(-15deg); }
+  75% { transform: rotate(5deg); }
 }
 
 .btn-banana-icon::before {
@@ -351,14 +539,14 @@ body {
   position: absolute;
   width: 80px;
   height: 80px;
-  
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
   animation: float 6s ease-in-out infinite;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
 }
-
 
 .banana-decoration::before {
   content: '🍌';
@@ -422,6 +610,18 @@ body {
   border-top-right-radius: 50% 80%;
   backdrop-filter: blur(5px);
   z-index: 1;
+  animation: wavyMotion 8s ease-in-out infinite;
+}
+
+@keyframes wavyMotion {
+  0%, 100% {
+    border-top-left-radius: 50% 80%;
+    border-top-right-radius: 50% 80%;
+  }
+  50% {
+    border-top-left-radius: 60% 70%;
+    border-top-right-radius: 40% 90%;
+  }
 }
 
 .landing-footer {
@@ -445,11 +645,29 @@ body {
 .footer-links a {
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 50%;
+  background: var(--text-light);
+  transition: width 0.3s ease, left 0.3s ease;
 }
 
 .footer-links a:hover {
   color: var(--text-light);
+  transform: translateY(-2px);
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+  left: 0;
 }
 
 @media (max-width: 768px) {
@@ -523,5 +741,9 @@ body {
   .banana-decoration {
     width: 50px;
     height: 50px;
+  }
+  
+  .particle {
+    opacity: 0.2;
   }
 }

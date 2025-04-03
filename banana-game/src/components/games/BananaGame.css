@@ -268,7 +268,6 @@ body {
   position: absolute;
   width: 80px;
   height: 80px;
-  
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -303,7 +302,6 @@ body {
   position: absolute;
   width: 100px;
   height: 100px;
-  
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -443,7 +441,6 @@ body {
 }
 
 .restart-btn::before {
-  
   position: absolute;
   left: 10px;
   top: 50%;
@@ -462,7 +459,6 @@ body {
 }
 
 .continue-btn::before {
-  
   position: absolute;
   left: 10px;
   top: 50%;
@@ -701,7 +697,7 @@ body {
   .level-up-card,
   .game-over-card {
     padding: 20px;
-    width: 80%;
+    width: 90%;
   }
   
   .level-up-card h2,
@@ -724,6 +720,10 @@ body {
     height: 60px;
   }
   
+  .banana::before {
+    font-size: 2.5rem;
+  }
+  
   .banana-splat {
     width: 80px;
     height: 80px;
@@ -739,11 +739,12 @@ body {
   
   .option-btn {
     font-size: 0.9rem;
-    padding: 8px 16px 8px 30px;
+    padding: 8px 16px;
   }
   
-  .option-btn::before {
-    font-size: 1rem;
-    left: 8px;
+  .user-details {
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
