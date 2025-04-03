@@ -4,7 +4,7 @@ A fun and engaging hyper-casual game where players race against time to tap as m
 
 ## Description
 
-Banana Tapper is a simple yet addictive game that challenges players to tap at least 25 bananas within a 20-second time limit. The game features colorful animations, responsive design, and a banana-themed interface that's appealing to players of all ages.
+Banana Tapper is a simple yet hyper causal game that challenges players to tap at least 3 bananas within a 20-second time limit. Each level increase the 3 taps and 5 sec. The game features colorful animations, responsive design, and a banana-themed interface that's appealing to players of all ages.
 
 ## Features
 
@@ -31,7 +31,8 @@ Banana Tapper is a simple yet addictive game that challenges players to tap at l
 
 2. Navigate to the project directory:
    ```
-   cd banana-tapper-game
+   cd banana-game
+   cd server
    ```
 
 3. Install dependencies:
@@ -41,7 +42,7 @@ Banana Tapper is a simple yet addictive game that challenges players to tap at l
 
 4. Start the development server:
    ```
-   npm start
+   npm run dev
    ```
 
 5. Open your browser and navigate to `http://localhost:3000`
@@ -56,7 +57,7 @@ Banana Tapper is a simple yet addictive game that challenges players to tap at l
 
 ## Credits
 
-- Game concept and development: [Your Name]
+- Game concept and development:Gihantha Deshabi
 - Banana emoji provided by standard Unicode character set
 - Background patterns created with CSS
 
